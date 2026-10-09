@@ -31,7 +31,7 @@ class UsageRingView(ctx: Context, private val theme: BrandTheme) : View(ctx) {
         letterSpacing = 0.1f
     }
 
-    var pct: Int = 0
+    var pct10: Int = 0
         set(v) { field = v; invalidate() }
 
     override fun onDraw(c: Canvas) {
@@ -42,20 +42,18 @@ class UsageRingView(ctx: Context, private val theme: BrandTheme) : View(ctx) {
         val inset = stroke / 2 + w * 0.04f
         val rect = RectF(inset, inset, w - inset, h - inset)
 
-        // backdrop
         c.drawArc(rect, 0f, 360f, false, track)
 
-        // sweep: Nothing OS goes clockwise flat; others start at top
-        val start = if (theme.pack == ThemePack.NOTHING) -90f else -90f
-        c.drawArc(rect, start, 360f * (pct / 100f), false, fill)
+        val start = -90f
+        c.drawArc(rect, start, 360f * (pct10 / 1000f), false, fill)
 
-        // danger color when >= 90
-        fill.color = if (pct >= 90) theme.danger else theme.accent
+        val pctWhole = pct10 / 10
+        fill.color = if (pctWhole >= 90) theme.danger else theme.accent
 
         text.textSize = w * 0.24f
         sub.textSize = w * 0.07f
         val cy = h / 2f
-        c.drawText("$pct%", w / 2f, cy + text.textSize * 0.15f, text)
+        c.drawText(UsageRepository.fmt(pct10), w / 2f, cy + text.textSize * 0.15f, text)
         c.drawText("SESSION  5H", w / 2f, cy + text.textSize * 0.55f, sub)
     }
 }

@@ -18,7 +18,7 @@ class UsageBarView(ctx: Context, private val theme: BrandTheme) : View(ctx) {
         color = theme.accent
     }
 
-    var pct: Int = 0
+    var pct10: Int = 0
         set(v) { field = v; invalidate() }
 
     override fun onDraw(c: Canvas) {
@@ -26,11 +26,11 @@ class UsageBarView(ctx: Context, private val theme: BrandTheme) : View(ctx) {
         val r = theme.cornerRadiusPx
         val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
         c.drawRoundRect(rect, r, r, track)
-        if (pct > 0) {
-            val w = width * (pct / 100f)
-            fill.color = if (pct >= 90) theme.danger else theme.accent
+        if (pct10 > 0) {
+            val w = width * (pct10 / 1000f)
+            fill.color = if (pct10 / 10 >= 90) theme.danger else theme.accent
             if (theme.pack == ThemePack.NOTHING && w < r * 2) {
-                c.drawRect(0f, 0f, w, height.toFloat(), fill) // sharp, no round-over on tiny fills
+                c.drawRect(0f, 0f, w, height.toFloat(), fill)
             } else {
                 c.drawRoundRect(RectF(0f, 0f, w, height.toFloat()), r, r, fill)
             }

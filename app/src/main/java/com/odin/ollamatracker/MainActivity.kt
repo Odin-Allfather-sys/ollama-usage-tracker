@@ -118,11 +118,11 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun updateLabels() {
-        val s = UsageRepository.cachedSessionPct(this)
-        val w = UsageRepository.cachedWeeklyPct(this)
-        dash.sessionRing.pct = s
-        dash.weeklyBar.pct = w
-        dash.weeklyLabel.text = "$w%"
+        val s10 = UsageRepository.cachedSessionPct10(this)
+        val w10 = UsageRepository.cachedWeeklyPct10(this)
+        dash.sessionRing.pct10 = s10
+        dash.weeklyBar.pct10 = w10
+        dash.weeklyValue.text = UsageRepository.fmt(w10) + "%"
         dash.statusText.text = "Updated " + UsageRepository.cachedTimestamp(this)
     }
 

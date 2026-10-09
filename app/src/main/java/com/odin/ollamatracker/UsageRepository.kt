@@ -12,28 +12,34 @@ import java.util.Locale
 /**
  * Central data holder. Real usage from OllamaUsageApi (API key auth),
  * caches it, detects threshold crossings, fires notifications, updates widgets.
+ * Percents are stored as x10 ints (554 = 55.4%) so the UI shows one decimal
+ * and matches the dashboard exactly.
  */
 object UsageRepository {
-    private var lastSessionPct: Int = -1
-    private var lastWeeklyPct: Int = -1
+    private var lastSessionPct10: Int = -1
+    private var lastWeeklyPct10: Int = -1
     private var lastFetch: Long = 0
     private var lastError: String? = null
 
-    fun cachedSessionPct(ctx: Context): Int {
-        if (lastSessionPct < 0) {
+    /** 554 = 55.4% */
+    fun cachedSessionPct10(ctx: Context): Int {
+        if (lastSessionPct10 < 0) {
             val p = ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE)
-            lastSessionPct = p.getInt("session_pct", 0)
+            lastSessionPct10 = p.getInt("session_pct_x10", p.getInt("session_pct", 0) * 10)
         }
-        return lastSessionPct
+        return lastSessionPct10
     }
 
-    fun cachedWeeklyPct(ctx: Context): Int {
-        if (lastWeeklyPct < 0) {
+    fun cachedWeeklyPct10(ctx: Context): Int {
+        if (lastWeeklyPct10 < 0) {
             val p = ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE)
-            lastWeeklyPct = p.getInt("weekly_pct", 0)
+            lastWeeklyPct10 = p.getInt("weekly_pct_x10", p.getInt("weekly_pct", 0) * 10)
         }
-        return lastWeeklyPct
+        return lastWeeklyPct10
     }
+
+    /** 554 -> "55.4" */
+    fun fmt(pct10: Int): String = "${pct10 / 10}.${pct10 % 10}"
 
     fun cachedTimestamp(ctx: Context): String {
         val p = ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE)
@@ -46,20 +52,24 @@ object UsageRepository {
         val result = runCatching { OllamaUsageApi.fetchUsage(ctx) }
         result.fold(
             onSuccess = { usage ->
+                val s10 = (usage.sessionPct * 10).toInt()
+                val w10 = (usage.weeklyPct * 10).toInt()
                 val p = ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE)
-                p.edit().putInt("session_pct", usage.sessionPct)
-                    .putInt("weekly_pct", usage.weeklyPct)
+                p.edit().putInt("session_pct_x10", s10)
+                    .putInt("weekly_pct_x10", w10)
+                    .putInt("session_pct", s10 / 10)   // legacy readers (widget/complication)
+                    .putInt("weekly_pct", w10 / 10)
                     .putLong("ts", System.currentTimeMillis()).apply()
-                lastSessionPct = usage.sessionPct
-                lastWeeklyPct = usage.weeklyPct
+                lastSessionPct10 = s10
+                lastWeeklyPct10 = w10
                 lastFetch = System.currentTimeMillis()
                 lastError = null
-                ThresholdNotifier.onNewUsage(ctx, usage.sessionPct, usage.weeklyPct)
+                ThresholdNotifier.onNewUsage(ctx, s10 / 10, w10 / 10)
                 WidgetRefresher.broadcast(ctx)
             },
             onFailure = { e ->
                 lastError = e.message
-                android.util.Log.w("UsageRepo", "scrape failed: ${e.message}")
+                android.util.Log.w("UsageRepo", "usage fetch failed: ${e.message}")
             }
         )
     }
@@ -67,7 +77,7 @@ object UsageRepository {
     /** Synchronous variant for contexts that need the value now (widget refresh press). */
     fun refreshBlocking(ctx: Context) = runBlocking {
         refreshNow(ctx)
-        lastSessionPct to lastWeeklyPct
+        lastSessionPct10 to lastWeeklyPct10
     }
 
     /**
@@ -85,12 +95,7 @@ object UsageRepository {
             .putInt("session_limit_req", sessionLimit)
             .putInt("weekly_limit_req", weeklyLimit)
             .apply()
-        // recompute cached percents with new limits right away
-        val sp = (result.sessionReq * 100 / sessionLimit).coerceIn(0, 100)
-        val wp = (result.weeklyReq * 100 / weeklyLimit).coerceIn(0, 100)
-        ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE).edit()
-            .putInt("session_pct", sp).putInt("weekly_pct", wp).apply()
-        lastSessionPct = sp; lastWeeklyPct = wp
+        refreshNow(ctx)  // recompute + cache with new limits
         return sessionLimit to weeklyLimit
     }
 }

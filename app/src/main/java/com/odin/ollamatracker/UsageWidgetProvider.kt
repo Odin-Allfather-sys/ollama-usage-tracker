@@ -42,8 +42,10 @@ class UsageWidgetProvider : AppWidgetProvider() {
         val prefs = context.getSharedPreferences("widget_prefs", Context.MODE_PRIVATE)
         val mode = prefs.getInt("mode_$appWidgetId", MODE_BOTH) // 0=session 1=weekly 2=both
         val views = RemoteViews(context.packageName, R.layout.usage_widget).apply {
-            val sessionPct = UsageRepository.cachedSessionPct(context)
-            val weeklyPct = UsageRepository.cachedWeeklyPct(context)
+            val sessionPct10 = UsageRepository.cachedSessionPct10(context)
+            val weeklyPct10 = UsageRepository.cachedWeeklyPct10(context)
+            val sessionPct = sessionPct10 / 10
+            val weeklyPct = weeklyPct10 / 10
             when (mode) {
                 MODE_SESSION -> {
                     setViewVisibility(R.id.session_row, android.view.View.VISIBLE)

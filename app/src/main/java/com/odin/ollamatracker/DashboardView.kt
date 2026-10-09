@@ -2,12 +2,10 @@ package com.odin.ollamatracker
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -17,19 +15,19 @@ import android.widget.Spinner
 import android.widget.TextView
 
 /**
- * Brand-themed main dashboard, built in code (no per-brand XML).
- * Big session ring + weekly bar; settings behind gear.
+ * Brand-themed main dashboard, built in code.
+ * Card-based: session ring card, weekly card, settings sheet behind gear.
  */
 @SuppressLint("ViewConstructor")
 class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearLayout(activity) {
 
     val sessionRing: UsageRingView
     val weeklyBar: UsageBarView
-    val sessionLabel: TextView
-    val weeklyLabel: TextView
+    val weeklyValue: TextView
     val statusText: TextView
     val settingsBtn: TextView
-    val refreshBtn: TextView
+    val refreshBtn: LinearLayout
+    lateinit var refreshLabel: TextView
     val themeSpinner: Spinner
     val calibSession: EditText
     val calibWeekly: EditText
@@ -42,173 +40,223 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
     lateinit var keyEdit: EditText
     lateinit var applyBtn: Button
 
-    init {
-        val ctx = activity
+    private val d: Float = resources.displayMetrics.density
+    private fun dp(v: Float) = (v * d).toInt()
+
+    private fun card(ctx: android.content.Context) = LinearLayout(ctx).apply {
         orientation = VERTICAL
-        setBackgroundColor(theme.bg)
-        val pad = (16 * resources.displayMetrics.density).toInt()
-        setPadding(pad, pad, pad, pad)
-
-        val h = ctx.resources.displayMetrics.heightPixels
-
-        // Header row: title + gear
-        val header = LinearLayout(ctx).apply { orientation = HORIZONTAL }
-        val title = TextView(ctx).apply {
-            text = "USAGE"
-            textSize = theme.titleSizeSp
-            setTextColor(theme.textPrimary)
-            typeface = if (theme.monoNumbers) Typeface.MONOSPACE else Typeface.create(theme.font, Typeface.BOLD)
-            letterSpacing = 0.04f
-        }
-        settingsBtn = TextView(ctx).apply {
-            text = "⚙"
-            textSize = 26f
-            setTextColor(theme.textSecondary)
-            gravity = Gravity.END
-            setPadding(0, 0, 0, theme.cornerRadiusPx.toInt() / 4)
-        }
-        header.addView(title, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
-        header.addView(settingsBtn)
-        addView(header)
-
-        // Session ring, dominant
-        sessionRing = UsageRingView(ctx, theme).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, (h * 0.34f).toInt())
-        }
-        addView(sessionRing)
-
-        // Session label under ring
-        sessionLabel = TextView(ctx).apply {
-            textSize = 14f
-            setTextColor(theme.textSecondary)
-            gravity = Gravity.CENTER
-            setPadding(0, (8 * resources.displayMetrics.density).toInt(), 0, 0)
-        }
-        addView(sessionLabel)
-
-        // Weekly bar block
-        weeklyLabel = TextView(ctx).apply {
-            textSize = theme.hugeMetricSizeSp / 2.2f
-            setTextColor(theme.textPrimary)
-            typeface = if (theme.monoNumbers) Typeface.MONOSPACE else Typeface.create(theme.font, Typeface.BOLD)
-            setPadding(0, (20 * resources.displayMetrics.density).toInt(), 0, (4 * resources.displayMetrics.density).toInt())
-        }
-        addView(weeklyLabel)
-
-        weeklyBar = UsageBarView(ctx, theme).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, (24 * resources.displayMetrics.density).toInt()).also {
-                (it as MarginLayoutParams).bottomMargin = (8 * resources.displayMetrics.density).toInt()
-            }
-        }
-        addView(weeklyBar)
-        val weeklyCaption = TextView(ctx).apply {
-            text = "WEEKLY"
-            textSize = 12f
-            letterSpacing = 0.12f
-            setTextColor(theme.textSecondary)
-        }
-        addView(weeklyCaption)
-
-        // Status
-        statusText = TextView(ctx).apply {
-            textSize = 12f
-            setTextColor(theme.textSecondary)
-            setPadding(0, (12 * resources.displayMetrics.density).toInt(), 0, 0)
-        }
-        addView(statusText)
-
-        // Refresh row
-        refreshBtn = TextView(ctx).apply {
-            text = "⟳  Refresh"
-            textSize = 16f
-            setTextColor(theme.accent)
-            gravity = Gravity.CENTER
-            setPadding(0, (16 * resources.displayMetrics.density).toInt(), 0, 0)
-        }
-        addView(refreshBtn)
-
-        // ---- Settings panel (hidden by default) ----
-        settingsPanel = LinearLayout(ctx).apply {
-            orientation = VERTICAL
-            visibility = View.GONE
-            setPadding(0, (16 * resources.displayMetrics.density).toInt(), 0, 0)
-        }
-        settingsPanel.addView(label(ctx, "Theme pack"))
-        themeSpinner = Spinner(ctx).apply {
-            adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_dropdown_item,
-                ThemePack.entries.map { it.label })
-        }
-        settingsPanel.addView(themeSpinner)
-
-        settingsPanel.addView(label(ctx, "Refresh interval (1-60 minutes)"))
-        val intervalEdit = EditText(ctx).apply {
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER
-            setTextColor(theme.textPrimary)
-            background = GradientDrawable().apply { setColor(theme.surface); cornerRadius = theme.cornerRadiusPx }
-            setPadding(24, 24, 24, 24)
-        }
-        settingsPanel.addView(intervalEdit)
-        this.intervalEdit = intervalEdit
-
-        settingsPanel.addView(label(ctx, "API key (ollama.com -> Keys)"))
-        keyEdit = EditText(ctx).apply {
-            hint = "Paste your API key"
-            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-            setTextColor(theme.textPrimary)
-            setHintTextColor(theme.textSecondary)
-            background = GradientDrawable().apply { setColor(theme.surface); cornerRadius = theme.cornerRadiusPx }
-            setPadding(24, 24, 24, 24)
-        }
-        settingsPanel.addView(keyEdit)
-        val applyBtn = Button(ctx).apply {
-            text = "APPLY SETTINGS"
-            setBackgroundColor(theme.surfaceAlt)
-            setTextColor(theme.textPrimary)
-        }
-        settingsPanel.addView(applyBtn)
-        this.applyBtn = applyBtn
-
-        settingsPanel.addView(label(ctx, "Session notify threshold (%)"))
-        sessionThresholdSeek = SeekBar(ctx).apply { max = 100 }
-        settingsPanel.addView(sessionThresholdSeek)
-
-        settingsPanel.addView(label(ctx, "Weekly notify threshold (%)"))
-        weeklyThresholdSeek = SeekBar(ctx).apply { max = 100 }
-        settingsPanel.addView(weeklyThresholdSeek)
-
-        thresholdLabel = label(ctx, "")
-
-        settingsPanel.addView(label(ctx, "Calibrate - type the two % values your dashboard shows"))
-        calibSession = TextField(ctx, "Session % (e.g. 52.3)")
-        calibWeekly = TextField(ctx, "Weekly % (e.g. 43.6)")
-        settingsPanel.addView(calibSession)
-        settingsPanel.addView(calibWeekly)
-        calibrateBtn = Button(ctx).apply {
-            text = "CALIBRATE"
-            setBackgroundColor(theme.surfaceAlt)
-            setTextColor(theme.textPrimary)
-        }
-        settingsPanel.addView(calibrateBtn)
-        addView(settingsPanel)
-    }
-
-    private fun label(ctx: android.content.Context, text: String) = TextView(ctx).apply {
-        this.text = text
-        textSize = 13f
-        setTextColor(theme.textSecondary)
-        setPadding(0, (14 * resources.displayMetrics.density).toInt(), 0, (4 * resources.displayMetrics.density).toInt())
-    }
-
-    private fun TextField(ctx: android.content.Context, hint: String) = EditText(ctx).apply {
-        this.hint = hint
-        inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
-        setTextColor(theme.textPrimary)
-        setHintTextColor(theme.textSecondary)
         background = GradientDrawable().apply {
             setColor(theme.surface)
             cornerRadius = theme.cornerRadiusPx
         }
-        setPadding(24, 24, 24, 24)
+        val p = dp(20f)
+        setPadding(p, p, p, p)
+        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).also {
+            (it as MarginLayoutParams).bottomMargin = dp(14f)
+        }
+    }
+
+    private fun label(ctx: android.content.Context, text: String, top: Float = 14f) = TextView(ctx).apply {
+        this.text = text
+        textSize = 12f
+        letterSpacing = 0.08f
+        setTextColor(theme.textSecondary)
+        setPadding(0, dp(top), 0, dp(6f))
+    }
+
+    private fun input(ctx: android.content.Context, hint: String, password: Boolean = false) = EditText(ctx).apply {
+        this.hint = hint
+        inputType = if (password)
+            android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        else
+            android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        setTextColor(theme.textPrimary)
+        setHintTextColor(theme.textSecondary)
+        background = GradientDrawable().apply {
+            setColor(theme.surfaceAlt)
+            cornerRadius = theme.cornerRadiusPx * 0.6f
+        }
+        setPadding(dp(16f), dp(14f), dp(16f), dp(14f))
+        textSize = 15f
+    }
+
+    private fun button(ctx: android.content.Context, text: String, accent: Boolean = false) = Button(ctx).apply {
+        this.text = text
+        textSize = 14f
+        letterSpacing = 0.06f
+        isAllCaps = true
+        background = GradientDrawable().apply {
+            setColor(if (accent) theme.accent else theme.surfaceAlt)
+            cornerRadius = theme.cornerRadiusPx * 0.6f
+        }
+        setTextColor(if (accent) theme.bg else theme.textPrimary)
+        stateListAnimator = null
+        setPadding(0, dp(14f), 0, dp(14f))
+        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).also {
+            (it as MarginLayoutParams).topMargin = dp(10f)
+        }
+    }
+
+    init {
+        val ctx = activity
+        orientation = VERTICAL
+        setBackgroundColor(theme.bg)
+        val pad = dp(20f)
+        setPadding(pad, dp(12f), pad, pad)
+
+        // Header
+        val header = LinearLayout(ctx).apply { 
+            orientation = HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).also {
+                (it as MarginLayoutParams).bottomMargin = dp(20f)
+            }
+        }
+        header.addView(TextView(ctx).apply {
+            text = "Usage"
+            textSize = theme.titleSizeSp
+            setTextColor(theme.textPrimary)
+            typeface = Typeface.create(theme.font ?: "sans-serif", Typeface.BOLD)
+        }, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
+        settingsBtn = TextView(ctx).apply {
+            text = "Settings"
+            textSize = 14f
+            setTextColor(theme.accent)
+            setPadding(dp(12f), dp(8f), 0, dp(8f))
+        }
+        header.addView(settingsBtn)
+        addView(header)
+
+        // Session ring card
+        val ringCard = card(ctx)
+        sessionRing = UsageRingView(ctx, theme).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(220f))
+        }
+        ringCard.addView(sessionRing)
+        ringCard.addView(TextView(ctx).apply {
+            text = "SESSION USAGE · RESETS EVERY 5 HOURS"
+            gravity = Gravity.CENTER
+        }.apply {
+            textSize = 11f
+            letterSpacing = 0.1f
+            setTextColor(theme.textSecondary)
+            setPadding(0, dp(10f), 0, 0)
+        })
+        addView(ringCard)
+
+        // Weekly card
+        val weekCard = card(ctx)
+        weekCard.addView(TextView(ctx).apply {
+            text = "WEEKLY"
+            textSize = 11f
+            letterSpacing = 0.1f
+            setTextColor(theme.textSecondary)
+        })
+        weeklyValue = TextView(ctx).apply {
+            textSize = 40f
+            setTextColor(theme.textPrimary)
+            typeface = if (theme.monoNumbers) Typeface.MONOSPACE else Typeface.create(theme.font, Typeface.BOLD)
+            setPadding(0, dp(4f), 0, dp(10f))
+        }
+        weekCard.addView(weeklyValue)
+        weeklyBar = UsageBarView(ctx, theme).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(14f))
+        }
+        weekCard.addView(weeklyBar)
+        addView(weekCard)
+
+        refreshBtn = LinearLayout(ctx).apply {
+            orientation = HORIZONTAL
+            gravity = Gravity.CENTER
+            background = GradientDrawable().apply {
+                setColor(theme.surfaceAlt)
+                cornerRadius = theme.cornerRadiusPx * 0.7f
+            }
+            setPadding(0, dp(16f), 0, dp(16f))
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).also {
+                (it as MarginLayoutParams).bottomMargin = dp(10f)
+            }
+            refreshLabel = TextView(ctx).apply {
+                text = "REFRESH NOW"
+                textSize = 14f
+                letterSpacing = 0.08f
+                setTextColor(theme.accent)
+            }
+            addView(refreshLabel)
+        }
+        addView(refreshBtn)
+
+        statusText = TextView(ctx).apply {
+            textSize = 12f
+            setTextColor(theme.textSecondary)
+            gravity = Gravity.CENTER
+            setPadding(0, dp(4f), 0, dp(8f))
+        }
+        addView(statusText)
+
+        // ---- Settings panel ----
+        settingsPanel = LinearLayout(ctx).apply {
+            orientation = VERTICAL
+            visibility = View.GONE
+            background = GradientDrawable().apply {
+                setColor(theme.surface)
+                cornerRadius = theme.cornerRadiusPx
+            }
+            setPadding(dp(20f), dp(20f), dp(20f), dp(20f))
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).also {
+                (it as MarginLayoutParams).topMargin = dp(6f)
+            }
+        }
+        settingsPanel.addView(TextView(ctx).apply {
+            text = "Settings"
+            textSize = 20f
+            setTextColor(theme.textPrimary)
+            typeface = Typeface.create(theme.font ?: "sans-serif", Typeface.BOLD)
+            setPadding(0, 0, 0, dp(14f))
+        })
+
+        settingsPanel.addView(label(ctx, "API KEY", 0f))
+        keyEdit = input(ctx, "sk-...", password = true)
+        settingsPanel.addView(keyEdit)
+
+        settingsPanel.addView(label(ctx, "THEME PACK"))
+        themeSpinner = Spinner(ctx).apply {
+            adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_dropdown_item, ThemePack.entries.map { it.label })
+            background = GradientDrawable().apply { setColor(theme.surfaceAlt); cornerRadius = theme.cornerRadiusPx * 0.6f }
+            setPadding(dp(12f), dp(12f), dp(12f), dp(12f))
+        }
+        settingsPanel.addView(themeSpinner)
+
+        settingsPanel.addView(label(ctx, "REFRESH INTERVAL (1-60 MIN)"))
+        intervalEdit = input(ctx, "15")
+        settingsPanel.addView(intervalEdit)
+
+        applyBtn = button(ctx, "Apply Settings")
+        settingsPanel.addView(applyBtn)
+
+        settingsPanel.addView(label(ctx, "SESSION NOTIFY THRESHOLD - 0 = OFF"))
+        sessionThresholdSeek = SeekBar(ctx).apply { max = 100 }
+        settingsPanel.addView(sessionThresholdSeek)
+
+        settingsPanel.addView(label(ctx, "WEEKLY NOTIFY THRESHOLD - 0 = OFF"))
+        weeklyThresholdSeek = SeekBar(ctx).apply { max = 100 }
+        settingsPanel.addView(weeklyThresholdSeek)
+
+        thresholdLabel = TextView(ctx).apply {
+            textSize = 12f
+            setTextColor(theme.textSecondary)
+            setPadding(0, dp(4f), 0, 0)
+        }
+        settingsPanel.addView(thresholdLabel)
+
+        settingsPanel.addView(label(ctx, "CALIBRATE - DASHBOARD % VALUES", 20f))
+        calibSession = input(ctx, "Session % (e.g. 52.3)")
+        calibWeekly = input(ctx, "Weekly % (e.g. 43.6)")
+        settingsPanel.addView(calibSession)
+        settingsPanel.addView(calibWeekly)
+        calibrateBtn = button(ctx, "Calibrate", accent = true)
+        settingsPanel.addView(calibrateBtn)
+        addView(settingsPanel)
     }
 
     fun asView(): View = this
