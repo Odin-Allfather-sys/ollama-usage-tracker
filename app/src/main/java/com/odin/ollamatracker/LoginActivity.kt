@@ -47,21 +47,40 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                if (url.contains("/signin") || url.contains("/signup")) return
+                val u = Uri.parse(url)
+                if (!(u.host ?: "").endsWith("ollama.com") || url.contains("/signin") || url.contains("/signup") || url.contains("github.com") || url.contains("oauth")) return
                 val cm = CookieManager.getInstance()
-                val cookie = cm.getCookie("https://ollama.com")
-                if (!cookie.isNullOrEmpty()) {
-                    getSharedPreferences("app_prefs", MODE_PRIVATE)
-                        .edit().putString("ollama_session_cookie", cookie).apply()
-                    Thread {
+                val cookie = cm.getCookie("https://ollama.com") ?: return
+                if (cookie.isNullOrEmpty()) return
+                // VERIFY the cookie actually authenticates before declaring signed in.
+                Thread {
+                    val ok = runCatching {
+                        val req = okhttp3.Request.Builder()
+                            .url("https://ollama.com/api/usage")
+                            .header("Cookie", cookie)
+                            .header("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
+                            .build()
+                        okhttp3.OkHttpClient().newCall(req).execute().use { resp ->
+                            resp.isSuccessful && !(resp.body?.string() ?: "").contains("invalid credentials")
+                        }
+                    }.getOrDefault(false)
+                    if (ok) {
+                        getSharedPreferences("app_prefs", MODE_PRIVATE)
+                            .edit().putString("ollama_session_cookie", cookie).apply()
                         UsageRepository.refreshNow(applicationContext)
                         runOnUiThread {
                             Toast.makeText(applicationContext, "Signed in. Saving usage data.", Toast.LENGTH_SHORT).show()
                             finish()
                         }
-                    }.start()
-                }
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(applicationContext, "Not signed in yet, keep going...", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.start()
             }
+
+            private fun hostIsOllama(u: Uri): Boolean = (u.host ?: "").endsWith("ollama.com")
         }
         webView.loadUrl("https://ollama.com/signin")
 
