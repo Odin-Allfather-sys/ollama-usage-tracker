@@ -3197,6 +3197,9 @@ id bounceEnd
 id bounceStart
 id buttonPanel
 id cache_measures
+id calib_session_input
+id calib_weekly_input
+id calibrate_btn
 id callMeasure
 id cancel_button
 id carryVelocity

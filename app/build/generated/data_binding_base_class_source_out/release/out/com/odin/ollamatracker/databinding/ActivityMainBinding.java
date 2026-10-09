@@ -25,6 +25,15 @@ public final class ActivityMainBinding implements ViewBinding {
   public final EditText apiKeyInput;
 
   @NonNull
+  public final EditText calibSessionInput;
+
+  @NonNull
+  public final EditText calibWeeklyInput;
+
+  @NonNull
+  public final Button calibrateBtn;
+
+  @NonNull
   public final EditText intervalInput;
 
   @NonNull
@@ -52,12 +61,17 @@ public final class ActivityMainBinding implements ViewBinding {
   public final EditText weeklyThresholdInput;
 
   private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull EditText apiKeyInput,
-      @NonNull EditText intervalInput, @NonNull Button refreshBtn, @NonNull Button saveBtn,
-      @NonNull EditText sessionLimitInput, @NonNull EditText sessionThresholdInput,
-      @NonNull TextView statusText, @NonNull TextView usageText, @NonNull EditText weeklyLimitInput,
+      @NonNull EditText calibSessionInput, @NonNull EditText calibWeeklyInput,
+      @NonNull Button calibrateBtn, @NonNull EditText intervalInput, @NonNull Button refreshBtn,
+      @NonNull Button saveBtn, @NonNull EditText sessionLimitInput,
+      @NonNull EditText sessionThresholdInput, @NonNull TextView statusText,
+      @NonNull TextView usageText, @NonNull EditText weeklyLimitInput,
       @NonNull EditText weeklyThresholdInput) {
     this.rootView = rootView;
     this.apiKeyInput = apiKeyInput;
+    this.calibSessionInput = calibSessionInput;
+    this.calibWeeklyInput = calibWeeklyInput;
+    this.calibrateBtn = calibrateBtn;
     this.intervalInput = intervalInput;
     this.refreshBtn = refreshBtn;
     this.saveBtn = saveBtn;
@@ -99,6 +113,24 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.api_key_input;
       EditText apiKeyInput = ViewBindings.findChildViewById(rootView, id);
       if (apiKeyInput == null) {
+        break missingId;
+      }
+
+      id = R.id.calib_session_input;
+      EditText calibSessionInput = ViewBindings.findChildViewById(rootView, id);
+      if (calibSessionInput == null) {
+        break missingId;
+      }
+
+      id = R.id.calib_weekly_input;
+      EditText calibWeeklyInput = ViewBindings.findChildViewById(rootView, id);
+      if (calibWeeklyInput == null) {
+        break missingId;
+      }
+
+      id = R.id.calibrate_btn;
+      Button calibrateBtn = ViewBindings.findChildViewById(rootView, id);
+      if (calibrateBtn == null) {
         break missingId;
       }
 
@@ -156,9 +188,9 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, apiKeyInput, intervalInput,
-          refreshBtn, saveBtn, sessionLimitInput, sessionThresholdInput, statusText, usageText,
-          weeklyLimitInput, weeklyThresholdInput);
+      return new ActivityMainBinding((LinearLayout) rootView, apiKeyInput, calibSessionInput,
+          calibWeeklyInput, calibrateBtn, intervalInput, refreshBtn, saveBtn, sessionLimitInput,
+          sessionThresholdInput, statusText, usageText, weeklyLimitInput, weeklyThresholdInput);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

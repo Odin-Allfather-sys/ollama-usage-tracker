@@ -69,4 +69,28 @@ object UsageRepository {
         refreshNow(ctx)
         lastSessionPct to lastWeeklyPct
     }
+
+    /**
+     * Calibration: user reads session % and weekly % off the real dashboard,
+     * we solve the limits so app % matches. limit = requests * 100 / pct.
+     * Returns null if a pct is 0 (can't solve from nothing).
+     */
+    fun calibrate(ctx: Context, dashSessionPct: Double, dashWeeklyPct: Double): Pair<Int, Int>? {
+        if (dashSessionPct <= 0 || dashWeeklyPct <= 0) return null
+        val result = runCatching { OllamaUsageApi.fetchUsage(ctx) }.getOrNull() ?: return null
+        if (result.sessionReq <= 0 || result.weeklyReq <= 0) return null
+        val sessionLimit = Math.round(result.sessionReq * 100.0 / dashSessionPct).toInt().coerceAtLeast(1)
+        val weeklyLimit = Math.round(result.weeklyReq * 100.0 / dashWeeklyPct).toInt().coerceAtLeast(1)
+        ctx.getSharedPreferences("app_prefs", Context.MODE_PRIVATE).edit()
+            .putInt("session_limit_req", sessionLimit)
+            .putInt("weekly_limit_req", weeklyLimit)
+            .apply()
+        // recompute cached percents with new limits right away
+        val sp = (result.sessionReq * 100 / sessionLimit).coerceIn(0, 100)
+        val wp = (result.weeklyReq * 100 / weeklyLimit).coerceIn(0, 100)
+        ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE).edit()
+            .putInt("session_pct", sp).putInt("weekly_pct", wp).apply()
+        lastSessionPct = sp; lastWeeklyPct = wp
+        return sessionLimit to weeklyLimit
+    }
 }

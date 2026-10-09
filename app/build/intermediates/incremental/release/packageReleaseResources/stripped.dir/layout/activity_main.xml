@@ -62,6 +62,29 @@
         android:inputType="number"
         android:layout_marginBottom="16dp"/>
 
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Calibrate: type the two % values your dashboard shows right now"/>
+    <EditText
+        android:id="@+id/calib_session_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dashboard session % (e.g. 52.3)"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp"/>
+    <EditText
+        android:id="@+id/calib_weekly_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dashboard weekly % (e.g. 43.6)"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp"/>
+    <Button android:id="@+id/calibrate_btn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Calibrate"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calibrate once. Session % drifts when you switch to heavier models; recalibrate if it drifts far."
+        android:textSize="12sp"
+        android:layout_marginBottom="12dp"/>
+
     <Button android:id="@+id/save_btn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Save Settings"/>
     <Button android:id="@+id/refresh_btn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Refresh Now"/>
 

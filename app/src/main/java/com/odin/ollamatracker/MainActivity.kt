@@ -28,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         val refreshBtn = findViewById<Button>(R.id.refresh_btn)
         val statusText = findViewById<TextView>(R.id.status_text)
         val usageText = findViewById<TextView>(R.id.usage_text)
+        val calibSessionEdit = findViewById<EditText>(R.id.calib_session_input)
+        val calibWeeklyEdit = findViewById<EditText>(R.id.calib_weekly_input)
+        val calibrateBtn = findViewById<Button>(R.id.calibrate_btn)
 
         keyEdit.setText(prefs.getString("api_key", "")!!)
         intervalEdit.setText(prefs.getInt("poll_interval_min", 15).toString())
@@ -63,6 +66,27 @@ class MainActivity : AppCompatActivity() {
             Thread {
                 UsageRepository.refreshNow(this)
                 runOnUiThread { showUsage(usageText, statusText) }
+            }.start()
+        }
+
+        calibrateBtn.setOnClickListener {
+            val s = calibSessionEdit.text.toString().toDoubleOrNull()
+            val w = calibWeeklyEdit.text.toString().toDoubleOrNull()
+            if (s == null || w == null || s <= 0 || w <= 0 || s > 100 || w > 100) {
+                Toast.makeText(this, "Enter your dashboard % values (e.g. 52.3)", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            statusText.text = "Calibrating..."
+            Thread {
+                val r = UsageRepository.calibrate(this, s, w)
+                runOnUiThread {
+                    if (r == null) {
+                        statusText.text = "Calibration failed. Check % values and API key."
+                    } else {
+                        Toast.makeText(this, "Calibrated. Limits fit to your dashboard.", Toast.LENGTH_SHORT).show()
+                        showUsage(usageText, statusText)
+                    }
+                }
             }.start()
         }
 
