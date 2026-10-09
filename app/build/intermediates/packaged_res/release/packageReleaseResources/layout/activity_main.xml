@@ -13,7 +13,14 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <Button android:id="@+id/login_btn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Sign in to ollama.com"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ollama API key (ollama.com -> Get API key)"/>
+    <EditText
+        android:id="@+id/api_key_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Paste your API key"
+        android:inputType="textPassword"
+        android:layout_marginBottom="12dp"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Auto-refresh interval (minutes, 1-60)"/>
     <EditText
@@ -34,6 +41,22 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Weekly notify threshold step (0=off, 1=every 1%)"/>
     <EditText
         android:id="@+id/weekly_threshold_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Session limit (requests per 5h, for % math)"/>
+    <EditText
+        android:id="@+id/session_limit_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Weekly limit (requests per 7d, for % math)"/>
+    <EditText
+        android:id="@+id/weekly_limit_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"

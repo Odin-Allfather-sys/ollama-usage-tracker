@@ -10,7 +10,7 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Central data holder. Scrapes ollama.com dashboard for session + weekly usage,
+ * Central data holder. Real usage from OllamaUsageApi (API key auth),
  * caches it, detects threshold crossings, fires notifications, updates widgets.
  */
 object UsageRepository {
@@ -43,7 +43,7 @@ object UsageRepository {
     fun refreshNowAsync(ctx: Context) = CoroutineScope(Dispatchers.IO).launch { refreshNow(ctx) }
 
     fun refreshNow(ctx: Context) {
-        val result = runCatching { DashboardScraper.fetchUsage(ctx) }
+        val result = runCatching { OllamaUsageApi.fetchUsage(ctx) }
         result.fold(
             onSuccess = { usage ->
                 val p = ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE)

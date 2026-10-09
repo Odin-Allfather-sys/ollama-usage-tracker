@@ -1,13 +1,14 @@
 R_DEF: Internal format may change without notice
 local
+id api_key_input
 id done_login
 id interval_input
-id login_btn
 id login_webview
 id mode_btn
 id refresh_btn
 id save_btn
 id session_bar
+id session_limit_input
 id session_pct
 id session_row
 id session_threshold_input
@@ -16,6 +17,7 @@ id status_text
 id updated_at
 id usage_text
 id weekly_bar
+id weekly_limit_input
 id weekly_pct
 id weekly_row
 id weekly_threshold_input

@@ -3176,6 +3176,7 @@ id animateToEnd
 id animateToStart
 id antiClockwise
 id anticipate
+id api_key_input
 id arc
 id asConfigured
 id async
@@ -3339,7 +3340,6 @@ id line3
 id linear
 id listMode
 id list_item
-id login_btn
 id login_webview
 id m3_side_sheet
 id marquee
@@ -3494,6 +3494,7 @@ id select_dialog_listview
 id selected
 id selection_type
 id session_bar
+id session_limit_input
 id session_pct
 id session_row
 id session_threshold_input
@@ -3603,6 +3604,7 @@ id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
 id weekly_bar
+id weekly_limit_input
 id weekly_pct
 id weekly_row
 id weekly_threshold_input

@@ -22,16 +22,19 @@ public final class ActivityMainBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final EditText intervalInput;
+  public final EditText apiKeyInput;
 
   @NonNull
-  public final Button loginBtn;
+  public final EditText intervalInput;
 
   @NonNull
   public final Button refreshBtn;
 
   @NonNull
   public final Button saveBtn;
+
+  @NonNull
+  public final EditText sessionLimitInput;
 
   @NonNull
   public final EditText sessionThresholdInput;
@@ -43,20 +46,26 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView usageText;
 
   @NonNull
+  public final EditText weeklyLimitInput;
+
+  @NonNull
   public final EditText weeklyThresholdInput;
 
-  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull EditText intervalInput,
-      @NonNull Button loginBtn, @NonNull Button refreshBtn, @NonNull Button saveBtn,
-      @NonNull EditText sessionThresholdInput, @NonNull TextView statusText,
-      @NonNull TextView usageText, @NonNull EditText weeklyThresholdInput) {
+  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull EditText apiKeyInput,
+      @NonNull EditText intervalInput, @NonNull Button refreshBtn, @NonNull Button saveBtn,
+      @NonNull EditText sessionLimitInput, @NonNull EditText sessionThresholdInput,
+      @NonNull TextView statusText, @NonNull TextView usageText, @NonNull EditText weeklyLimitInput,
+      @NonNull EditText weeklyThresholdInput) {
     this.rootView = rootView;
+    this.apiKeyInput = apiKeyInput;
     this.intervalInput = intervalInput;
-    this.loginBtn = loginBtn;
     this.refreshBtn = refreshBtn;
     this.saveBtn = saveBtn;
+    this.sessionLimitInput = sessionLimitInput;
     this.sessionThresholdInput = sessionThresholdInput;
     this.statusText = statusText;
     this.usageText = usageText;
+    this.weeklyLimitInput = weeklyLimitInput;
     this.weeklyThresholdInput = weeklyThresholdInput;
   }
 
@@ -87,15 +96,15 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.interval_input;
-      EditText intervalInput = ViewBindings.findChildViewById(rootView, id);
-      if (intervalInput == null) {
+      id = R.id.api_key_input;
+      EditText apiKeyInput = ViewBindings.findChildViewById(rootView, id);
+      if (apiKeyInput == null) {
         break missingId;
       }
 
-      id = R.id.login_btn;
-      Button loginBtn = ViewBindings.findChildViewById(rootView, id);
-      if (loginBtn == null) {
+      id = R.id.interval_input;
+      EditText intervalInput = ViewBindings.findChildViewById(rootView, id);
+      if (intervalInput == null) {
         break missingId;
       }
 
@@ -108,6 +117,12 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.save_btn;
       Button saveBtn = ViewBindings.findChildViewById(rootView, id);
       if (saveBtn == null) {
+        break missingId;
+      }
+
+      id = R.id.session_limit_input;
+      EditText sessionLimitInput = ViewBindings.findChildViewById(rootView, id);
+      if (sessionLimitInput == null) {
         break missingId;
       }
 
@@ -129,14 +144,21 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.weekly_limit_input;
+      EditText weeklyLimitInput = ViewBindings.findChildViewById(rootView, id);
+      if (weeklyLimitInput == null) {
+        break missingId;
+      }
+
       id = R.id.weekly_threshold_input;
       EditText weeklyThresholdInput = ViewBindings.findChildViewById(rootView, id);
       if (weeklyThresholdInput == null) {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, intervalInput, loginBtn, refreshBtn,
-          saveBtn, sessionThresholdInput, statusText, usageText, weeklyThresholdInput);
+      return new ActivityMainBinding((LinearLayout) rootView, apiKeyInput, intervalInput,
+          refreshBtn, saveBtn, sessionLimitInput, sessionThresholdInput, statusText, usageText,
+          weeklyLimitInput, weeklyThresholdInput);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
