@@ -11,8 +11,8 @@ android {
         applicationId = "com.odin.ollamatracker"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 7
+        versionName = "1.2.4"
     }
     buildTypes {
         release {
