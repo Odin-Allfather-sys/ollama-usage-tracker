@@ -38,6 +38,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.odin.ollamatracker.LoginActivity"
+            android:exported="false" />
 
         <receiver
             android:name="com.odin.ollamatracker.UsageWidgetProvider"

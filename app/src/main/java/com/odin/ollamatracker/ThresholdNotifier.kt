@@ -42,6 +42,11 @@ object ThresholdNotifier {
             .putInt("prev_weekly_pct", newWeekly).apply()
     }
 
+    fun notifyReauthRequired(ctx: Context) {
+        notify(ctx, "Ollama Tracker - Sign in again",
+            "Your ollama.com session expired. Open the app and tap Sign in.")
+    }
+
     private fun notify(ctx: Context, title: String, message: String) {
         val mgr = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

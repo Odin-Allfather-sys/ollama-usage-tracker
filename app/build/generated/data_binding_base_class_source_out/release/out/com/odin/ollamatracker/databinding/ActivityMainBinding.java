@@ -22,10 +22,10 @@ public final class ActivityMainBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final EditText cookieInput;
+  public final EditText intervalInput;
 
   @NonNull
-  public final EditText intervalInput;
+  public final Button loginBtn;
 
   @NonNull
   public final Button refreshBtn;
@@ -45,13 +45,13 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final EditText weeklyThresholdInput;
 
-  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull EditText cookieInput,
-      @NonNull EditText intervalInput, @NonNull Button refreshBtn, @NonNull Button saveBtn,
+  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull EditText intervalInput,
+      @NonNull Button loginBtn, @NonNull Button refreshBtn, @NonNull Button saveBtn,
       @NonNull EditText sessionThresholdInput, @NonNull TextView statusText,
       @NonNull TextView usageText, @NonNull EditText weeklyThresholdInput) {
     this.rootView = rootView;
-    this.cookieInput = cookieInput;
     this.intervalInput = intervalInput;
+    this.loginBtn = loginBtn;
     this.refreshBtn = refreshBtn;
     this.saveBtn = saveBtn;
     this.sessionThresholdInput = sessionThresholdInput;
@@ -87,15 +87,15 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.cookie_input;
-      EditText cookieInput = ViewBindings.findChildViewById(rootView, id);
-      if (cookieInput == null) {
-        break missingId;
-      }
-
       id = R.id.interval_input;
       EditText intervalInput = ViewBindings.findChildViewById(rootView, id);
       if (intervalInput == null) {
+        break missingId;
+      }
+
+      id = R.id.login_btn;
+      Button loginBtn = ViewBindings.findChildViewById(rootView, id);
+      if (loginBtn == null) {
         break missingId;
       }
 
@@ -135,8 +135,8 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, cookieInput, intervalInput,
-          refreshBtn, saveBtn, sessionThresholdInput, statusText, usageText, weeklyThresholdInput);
+      return new ActivityMainBinding((LinearLayout) rootView, intervalInput, loginBtn, refreshBtn,
+          saveBtn, sessionThresholdInput, statusText, usageText, weeklyThresholdInput);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

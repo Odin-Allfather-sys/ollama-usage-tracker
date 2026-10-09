@@ -4,6 +4,10 @@
         "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-xhdpi/ic_launcher.png"
     },
     {
+        "merged": "com.odin.ollamatracker.app-release-43:/layout_activity_login.xml.flat",
+        "source": "com.odin.ollamatracker.app-main-44:/layout/activity_login.xml"
+    },
+    {
         "merged": "com.odin.ollamatracker.app-release-43:/layout_activity_main.xml.flat",
         "source": "com.odin.ollamatracker.app-main-44:/layout/activity_main.xml"
     },
@@ -20,12 +24,12 @@
         "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/xml/usage_widget_info.xml"
     },
     {
-        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-xxhdpi/ic_launcher.png"
-    },
-    {
         "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/layout_activity_main.xml.flat",
         "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
         "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-hdpi_ic_launcher.png.flat",

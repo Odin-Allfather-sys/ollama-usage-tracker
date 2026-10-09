@@ -3225,7 +3225,6 @@ id content
 id contentPanel
 id contiguous
 id continuousVelocity
-id cookie_input
 id coordinator
 id cos
 id counterclockwise
@@ -3339,6 +3338,7 @@ id line3
 id linear
 id listMode
 id list_item
+id login_btn
 id m3_side_sheet
 id marquee
 id masked
@@ -3503,6 +3503,7 @@ id showHome
 id showTitle
 id sin
 id skipCollapsed
+id skip_login
 id skipped
 id slide
 id snackbar_action
@@ -3726,6 +3727,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_login
 layout activity_main
 layout custom_dialog
 layout design_bottom_navigation_item

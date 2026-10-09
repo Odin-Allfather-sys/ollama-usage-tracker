@@ -13,14 +13,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tracker URL (Asgard usage endpoint)"/>
-    <EditText
-        android:id="@+id/cookie_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="http://100.94.103.108:8443/usage"
-        android:inputType="textUri"
-        android:layout_marginBottom="12dp"/>
+    <Button android:id="@+id/login_btn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Sign in to ollama.com"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Auto-refresh interval (minutes, 1-60)"/>
     <EditText
