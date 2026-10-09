@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
                 if (isFinishing || isDestroyed) return
                 try {
                     val cookie = CookieManager.getInstance().getCookie("https://ollama.com")
-                    if (!cookie.isNullOrEmpty() && cookie.contains("session=")) {
+                    if (!cookie.isNullOrEmpty()) {
                         // Fire and forget verify; LoginActivityVerify is a shared check
                         Thread {
                             val ok = verifyCookie(cookie)
