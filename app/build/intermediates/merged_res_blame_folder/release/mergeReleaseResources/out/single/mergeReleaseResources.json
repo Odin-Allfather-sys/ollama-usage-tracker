@@ -1,34 +1,38 @@
 [
     {
-        "merged": "com.odin.ollamatracker.app-release-43:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "com.odin.ollamatracker.app-main-44:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.odin.ollamatracker.app-release-43:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "com.odin.ollamatracker.app-main-44:/mipmap-mdpi/ic_launcher.png"
-    },
-    {
-        "merged": "com.odin.ollamatracker.app-release-43:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "com.odin.ollamatracker.app-main-44:/mipmap-xxhdpi/ic_launcher.png"
-    },
-    {
-        "merged": "com.odin.ollamatracker.app-release-43:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "com.odin.ollamatracker.app-main-44:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "com.odin.ollamatracker.app-release-43:/layout_activity_main.xml.flat",
+        "source": "com.odin.ollamatracker.app-main-44:/layout/activity_main.xml"
     },
     {
         "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/layout_usage_widget.xml.flat",
         "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/layout/usage_widget.xml"
     },
     {
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
         "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/xml_usage_widget_info.xml.flat",
         "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/xml/usage_widget_info.xml"
     },
     {
-        "merged": "com.odin.ollamatracker.app-release-43:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.odin.ollamatracker.app-main-44:/mipmap-hdpi/ic_launcher.png"
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
         "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/layout_activity_main.xml.flat",
         "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-release-43:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/mipmap-xxxhdpi/ic_launcher.png"
     }
 ]

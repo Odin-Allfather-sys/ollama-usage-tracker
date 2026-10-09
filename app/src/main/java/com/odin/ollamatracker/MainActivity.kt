@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val statusText = findViewById<TextView>(R.id.status_text)
         val usageText = findViewById<TextView>(R.id.usage_text)
 
-        cookieEdit.setText(prefs.getString("ollama_session_cookie", ""))
+        cookieEdit.setText(prefs.getString("tracker_url", "http://100.94.103.108:8443/usage"))
         intervalEdit.setText(prefs.getInt("poll_interval_min", 15).toString())
         sessionThresholdEdit.setText(prefs.getInt("session_threshold_pct", 0).toString())
         weeklyThresholdEdit.setText(prefs.getInt("weekly_threshold_pct", 0).toString())
@@ -38,11 +38,11 @@ class MainActivity : AppCompatActivity() {
             val sessionT = sessionThresholdEdit.text.toString().toIntOrNull() ?: 0
             val weeklyT = weeklyThresholdEdit.text.toString().toIntOrNull() ?: 0
             if (cookie.isEmpty()) {
-                Toast.makeText(this, "Session cookie required", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Tracker URL required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             prefs.edit()
-                .putString("ollama_session_cookie", cookie)
+                .putString("tracker_url", cookie)
                 .putInt("session_threshold_pct", sessionT.coerceIn(0, 100))
                 .putInt("weekly_threshold_pct", weeklyT.coerceIn(0, 100))
                 .apply()
