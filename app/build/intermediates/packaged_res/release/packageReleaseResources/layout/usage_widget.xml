@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#1E1E1E"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/mode_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_manage"
+            android:contentDescription="Mode"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ollama"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:paddingStart="8dp"/>
+        <ImageButton
+            android:id="@+id/refresh_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_popup_sync"
+            android:contentDescription="Refresh"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/session_row"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Session" android:textColor="#AAA"/>
+            <TextView android:id="@+id/session_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0%" android:textColor="#FFF" android:textStyle="bold"/>
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/session_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:max="100"
+            android:progress="0"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/weekly_row"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Weekly" android:textColor="#AAA"/>
+            <TextView android:id="@+id/weekly_pct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0%" android:textColor="#FFF" android:textStyle="bold"/>
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/weekly_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:max="100"
+            android:progress="0"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/updated_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#777"
+        android:textSize="11sp"
+        android:layout_marginTop="4dp"/>
+</LinearLayout>

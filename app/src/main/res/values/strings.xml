@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Ollama Tracker</string>
+    <string name="widget_desc">Shows Ollama Cloud session and/or weekly usage with progress bars.</string>
+</resources>

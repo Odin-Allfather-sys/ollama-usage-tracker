@@ -1,0 +1,25 @@
+R_DEF: Internal format may change without notice
+local
+id cookie_input
+id interval_input
+id mode_btn
+id refresh_btn
+id save_btn
+id session_bar
+id session_pct
+id session_row
+id session_threshold_input
+id status_text
+id updated_at
+id usage_text
+id weekly_bar
+id weekly_pct
+id weekly_row
+id weekly_threshold_input
+layout activity_main
+layout usage_widget
+mipmap ic_launcher
+string app_name
+string widget_desc
+style Theme.OllamaTracker
+xml usage_widget_info

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Ollama Wear"
+        android:theme="@android:style/Theme.DeviceDefault">
+        <uses-library android:name="com.google.android.wearable" android:required="true" />
+        <service
+            android:name=".UsageComplicationService"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Ollama Usage">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

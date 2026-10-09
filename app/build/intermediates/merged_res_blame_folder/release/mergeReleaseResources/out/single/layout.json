@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.odin.ollamatracker.app-mergeReleaseResources-42:/layout/usage_widget.xml",
+        "source": "com.odin.ollamatracker.app-main-44:/layout/usage_widget.xml"
+    },
+    {
+        "merged": "com.odin.ollamatracker.app-mergeReleaseResources-42:/layout/activity_main.xml",
+        "source": "com.odin.ollamatracker.app-main-44:/layout/activity_main.xml"
+    }
+]
