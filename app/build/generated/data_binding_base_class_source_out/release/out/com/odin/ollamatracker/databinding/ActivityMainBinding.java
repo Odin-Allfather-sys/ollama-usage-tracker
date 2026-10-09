@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +19,7 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
   public final EditText apiKeyInput;
@@ -60,7 +60,7 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final EditText weeklyThresholdInput;
 
-  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull EditText apiKeyInput,
+  private ActivityMainBinding(@NonNull ScrollView rootView, @NonNull EditText apiKeyInput,
       @NonNull EditText calibSessionInput, @NonNull EditText calibWeeklyInput,
       @NonNull Button calibrateBtn, @NonNull EditText intervalInput, @NonNull Button refreshBtn,
       @NonNull Button saveBtn, @NonNull EditText sessionLimitInput,
@@ -85,7 +85,7 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -188,7 +188,7 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, apiKeyInput, calibSessionInput,
+      return new ActivityMainBinding((ScrollView) rootView, apiKeyInput, calibSessionInput,
           calibWeeklyInput, calibrateBtn, intervalInput, refreshBtn, saveBtn, sessionLimitInput,
           sessionThresholdInput, statusText, usageText, weeklyLimitInput, weeklyThresholdInput);
     }
