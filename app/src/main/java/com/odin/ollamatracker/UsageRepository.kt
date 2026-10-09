@@ -52,8 +52,8 @@ object UsageRepository {
         val result = runCatching { OllamaUsageApi.fetchUsage(ctx) }
         result.fold(
             onSuccess = { usage ->
-                val s10 = (usage.sessionPct * 10).toInt()
-                val w10 = (usage.weeklyPct * 10).toInt()
+                val s10 = usage.sessionPct   // already x10 from OllamaUsageApi
+                val w10 = usage.weeklyPct
                 val p = ctx.getSharedPreferences("usage_cache", Context.MODE_PRIVATE)
                 p.edit().putInt("session_pct_x10", s10)
                     .putInt("weekly_pct_x10", w10)

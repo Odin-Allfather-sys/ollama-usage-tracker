@@ -139,8 +139,10 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
 
         // Session ring card
         val ringCard = card(ctx)
+        val ringSize = dp(230f)
         sessionRing = UsageRingView(ctx, theme).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(220f))
+            gravity = Gravity.CENTER
+            layoutParams = LayoutParams(ringSize, ringSize)
         }
         ringCard.addView(sessionRing)
         ringCard.addView(TextView(ctx).apply {

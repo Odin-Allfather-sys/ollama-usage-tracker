@@ -54,9 +54,10 @@ object OllamaUsageApi {
         val sessionReq = computeLastHours(dayBody, 5)
             ?: (intField(dayBody, "request_count", inTotals = true) ?: 0)
 
-        val sp = (sessionReq * 100 / sessionLimit).coerceIn(0, 100)
-        val wp = (weeklyReq * 100 / weeklyLimit).coerceIn(0, 100)
-        return UsageResult(sp, wp, sessionReq, weeklyReq, weeklyLimit, sessionLimit)
+        val sp = (sessionReq * 1000 / sessionLimit)   // x10, keeps decimal
+        val wp = (weeklyReq * 1000 / weeklyLimit)
+        return UsageResult(sp.coerceIn(0, 1000), wp.coerceIn(0, 1000),
+            sessionReq, weeklyReq, weeklyLimit, sessionLimit)
     }
 
     private fun get(url: String, key: String): String {
