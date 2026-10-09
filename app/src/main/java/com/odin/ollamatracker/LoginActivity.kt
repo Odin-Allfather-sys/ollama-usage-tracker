@@ -61,7 +61,10 @@ class LoginActivity : AppCompatActivity() {
                             .header("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
                             .build()
                         okhttp3.OkHttpClient().newCall(req).execute().use { resp ->
-                            resp.isSuccessful && !(resp.body?.string() ?: "").contains("invalid credentials")
+                            if (!resp.isSuccessful) return@use false
+                            val b = resp.body?.string() ?: return@use false
+                            // Authenticated = NOT the invalid-credentials error, and there's some usage payload
+                            !b.contains("invalid credentials") && b.trimStart().startsWith("{")
                         }
                     }.getOrDefault(false)
                     if (ok) {
