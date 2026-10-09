@@ -4,6 +4,7 @@ package com.odin.ollamatracker.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
@@ -20,10 +21,15 @@ public final class ActivityLoginBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final WebView loginWebview;
+
+  @NonNull
   public final Button skipLogin;
 
-  private ActivityLoginBinding(@NonNull LinearLayout rootView, @NonNull Button skipLogin) {
+  private ActivityLoginBinding(@NonNull LinearLayout rootView, @NonNull WebView loginWebview,
+      @NonNull Button skipLogin) {
     this.rootView = rootView;
+    this.loginWebview = loginWebview;
     this.skipLogin = skipLogin;
   }
 
@@ -54,13 +60,19 @@ public final class ActivityLoginBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.login_webview;
+      WebView loginWebview = ViewBindings.findChildViewById(rootView, id);
+      if (loginWebview == null) {
+        break missingId;
+      }
+
       id = R.id.skip_login;
       Button skipLogin = ViewBindings.findChildViewById(rootView, id);
       if (skipLogin == null) {
         break missingId;
       }
 
-      return new ActivityLoginBinding((LinearLayout) rootView, skipLogin);
+      return new ActivityLoginBinding((LinearLayout) rootView, loginWebview, skipLogin);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

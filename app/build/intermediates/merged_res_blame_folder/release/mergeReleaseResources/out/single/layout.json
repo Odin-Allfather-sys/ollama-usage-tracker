@@ -1,7 +1,7 @@
 [
     {
-        "merged": "com.odin.ollamatracker.app-mergeReleaseResources-42:/layout/activity_main.xml",
-        "source": "com.odin.ollamatracker.app-main-44:/layout/activity_main.xml"
+        "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-mergeReleaseResources-42:/layout/activity_login.xml",
+        "source": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-main-44:/layout/activity_login.xml"
     },
     {
         "merged": "/home/enrich/.gradle/daemon/8.9/com.odin.ollamatracker.app-mergeReleaseResources-42:/layout/activity_main.xml",

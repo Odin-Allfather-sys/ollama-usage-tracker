@@ -1,8 +1,12 @@
 package com.odin.ollamatracker
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
@@ -10,10 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * Login screen: WebView at ollama.com/signin. User signs in with their own
- * credentials inside the WebView. When navigation lands on a signed-in page,
- * we capture the session cookie and store it. Ollama's system handles auth;
- * we only persist the resulting cookie for /api/usage polling.
+ * Login screen: embedded WebView at ollama.com/signin. User signs in with
+ * their own credentials in-app. External-browser links are intercepted and
+ * forced back into the WebView (or blocked) so session cookies stay in-app.
+ * On landing at a signed-in page we persist the cookie string.
  */
 class LoginActivity : AppCompatActivity() {
     private lateinit var webView: WebView
@@ -21,31 +25,41 @@ class LoginActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        webView = WebView(this)
-        setContentView(webView)
+        setContentView(R.layout.activity_login)
+        webView = findViewById(R.id.login_webview)
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         CookieManager.getInstance().setAcceptCookie(true)
-        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
 
         webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                val url = request.url
+                val host = url.host ?: return false
+                // Keep everything ollama.com (and its auth subdomains) in-app.
+                if (host.endsWith("ollama.com")) return false
+                // Google/GitHub OAuth popups: block external app launch, open in the WebView instead.
+                return try {
+                    // Load external auth providers inline in the same WebView.
+                    false
+                } catch (e: ActivityNotFoundException) {
+                    true
+                }
+            }
+
             override fun onPageFinished(view: WebView, url: String) {
-                // Signed-in indicators: being on the home/dashboard and NOT /signin
-                if (!url.contains("/signin") && !url.contains("/signup")) {
-                    val cm = CookieManager.getInstance()
-                    val cookie = cm.getCookie("https://ollama.com")
-                    if (!cookie.isNullOrEmpty()) {
-                        getSharedPreferences("app_prefs", MODE_PRIVATE)
-                            .edit().putString("ollama_session_cookie", cookie).apply()
-                        // immediate first fetch
-                        Thread {
-                            UsageRepository.refreshNow(applicationContext)
-                            runOnUiThread {
-                                Toast.makeText(applicationContext, "Signed in. Saving usage data.", Toast.LENGTH_SHORT).show()
-                                finish()
-                            }
-                        }.start()
-                    }
+                if (url.contains("/signin") || url.contains("/signup")) return
+                val cm = CookieManager.getInstance()
+                val cookie = cm.getCookie("https://ollama.com")
+                if (!cookie.isNullOrEmpty()) {
+                    getSharedPreferences("app_prefs", MODE_PRIVATE)
+                        .edit().putString("ollama_session_cookie", cookie).apply()
+                    Thread {
+                        UsageRepository.refreshNow(applicationContext)
+                        runOnUiThread {
+                            Toast.makeText(applicationContext, "Signed in. Saving usage data.", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }.start()
                 }
             }
         }
