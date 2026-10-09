@@ -104,6 +104,16 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
         val pad = dp(20f)
         setPadding(pad, dp(12f), pad, pad)
 
+        val scroll = android.widget.ScrollView(ctx).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            isFillViewport = true
+        }
+        val content = LinearLayout(ctx).apply {
+            orientation = VERTICAL
+        }
+        // everything else gets added to `content`, which lives inside scroll
+        val addTarget = content
+
         // Header
         val header = LinearLayout(ctx).apply { 
             orientation = HORIZONTAL
@@ -125,7 +135,7 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
             setPadding(dp(12f), dp(8f), 0, dp(8f))
         }
         header.addView(settingsBtn)
-        addView(header)
+        content.addView(header)
 
         // Session ring card
         val ringCard = card(ctx)
@@ -142,7 +152,7 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
             setTextColor(theme.textSecondary)
             setPadding(0, dp(10f), 0, 0)
         })
-        addView(ringCard)
+        content.addView(ringCard)
 
         // Weekly card
         val weekCard = card(ctx)
@@ -163,7 +173,7 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(14f))
         }
         weekCard.addView(weeklyBar)
-        addView(weekCard)
+        content.addView(weekCard)
 
         refreshBtn = LinearLayout(ctx).apply {
             orientation = HORIZONTAL
@@ -184,7 +194,7 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
             }
             addView(refreshLabel)
         }
-        addView(refreshBtn)
+        content.addView(refreshBtn)
 
         statusText = TextView(ctx).apply {
             textSize = 12f
@@ -192,7 +202,7 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
             gravity = Gravity.CENTER
             setPadding(0, dp(4f), 0, dp(8f))
         }
-        addView(statusText)
+        content.addView(statusText)
 
         // ---- Settings panel ----
         settingsPanel = LinearLayout(ctx).apply {
@@ -256,7 +266,9 @@ class DashboardView(activity: Activity, private val theme: BrandTheme) : LinearL
         settingsPanel.addView(calibWeekly)
         calibrateBtn = button(ctx, "Calibrate", accent = true)
         settingsPanel.addView(calibrateBtn)
-        addView(settingsPanel)
+        content.addView(settingsPanel)
+        scroll.addView(content)
+        addView(scroll)
     }
 
     fun asView(): View = this
