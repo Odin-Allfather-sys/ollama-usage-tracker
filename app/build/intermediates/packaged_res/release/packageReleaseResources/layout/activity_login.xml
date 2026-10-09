@@ -9,6 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cancel"/>
+    <Button
+        android:id="@+id/done_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DONE - Verify and Save"/>
 
     <WebView
         android:id="@+id/login_webview"

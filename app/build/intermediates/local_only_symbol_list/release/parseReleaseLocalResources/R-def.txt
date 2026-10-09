@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+id done_login
 id interval_input
 id login_btn
 id login_webview

@@ -21,14 +21,18 @@ public final class ActivityLoginBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final Button doneLogin;
+
+  @NonNull
   public final WebView loginWebview;
 
   @NonNull
   public final Button skipLogin;
 
-  private ActivityLoginBinding(@NonNull LinearLayout rootView, @NonNull WebView loginWebview,
-      @NonNull Button skipLogin) {
+  private ActivityLoginBinding(@NonNull LinearLayout rootView, @NonNull Button doneLogin,
+      @NonNull WebView loginWebview, @NonNull Button skipLogin) {
     this.rootView = rootView;
+    this.doneLogin = doneLogin;
     this.loginWebview = loginWebview;
     this.skipLogin = skipLogin;
   }
@@ -60,6 +64,12 @@ public final class ActivityLoginBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.done_login;
+      Button doneLogin = ViewBindings.findChildViewById(rootView, id);
+      if (doneLogin == null) {
+        break missingId;
+      }
+
       id = R.id.login_webview;
       WebView loginWebview = ViewBindings.findChildViewById(rootView, id);
       if (loginWebview == null) {
@@ -72,7 +82,7 @@ public final class ActivityLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityLoginBinding((LinearLayout) rootView, loginWebview, skipLogin);
+      return new ActivityLoginBinding((LinearLayout) rootView, doneLogin, loginWebview, skipLogin);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
