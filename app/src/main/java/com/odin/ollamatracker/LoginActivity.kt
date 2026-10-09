@@ -86,11 +86,55 @@ class LoginActivity : AppCompatActivity() {
             private fun hostIsOllama(u: Uri): Boolean = (u.host ?: "").endsWith("ollama.com")
         }
         webView.loadUrl("https://ollama.com/signin")
+        // SPA pages don't always fire onPageFinished on navigations.
+        // Poll the cookie jar every 2s while this screen is open; verify each candidate.
+        val h = android.os.Handler(android.os.Looper.getMainLooper())
+        val poll = object : Runnable {
+            override fun run() {
+                if (isFinishing || isDestroyed) return
+                try {
+                    val cookie = CookieManager.getInstance().getCookie("https://ollama.com")
+                    if (!cookie.isNullOrEmpty() && cookie.contains("session=")) {
+                        // Fire and forget verify; LoginActivityVerify is a shared check
+                        Thread {
+                            val ok = verifyCookie(cookie)
+                            if (ok) {
+                                getSharedPreferences("app_prefs", MODE_PRIVATE)
+                                    .edit().putString("ollama_session_cookie", cookie).apply()
+                                UsageRepository.refreshNow(applicationContext)
+                                runOnUiThread {
+                                    try {
+                                        Toast.makeText(applicationContext, "Signed in.", Toast.LENGTH_SHORT).show()
+                                        finish()
+                                    } catch (_: Exception) {}
+                                }
+                            }
+                        }.start()
+                    }
+                } catch (_: Exception) {}
+                h.postDelayed(this, 2000)
+            }
+        }
+        h.post(poll)
 
         findViewById<Button>(R.id.skip_login).setOnClickListener {
+            h.removeCallbacksAndMessages(null)
             finish()
         }
     }
+
+    private fun verifyCookie(cookie: String): Boolean = runCatching {
+        val req = okhttp3.Request.Builder()
+            .url("https://ollama.com/api/usage")
+            .header("Cookie", cookie)
+            .header("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
+            .build()
+        okhttp3.OkHttpClient().newCall(req).execute().use { resp ->
+            if (!resp.isSuccessful) return@use false
+            val b = resp.body?.string() ?: return@use false
+            !b.contains("invalid credentials") && b.trimStart().startsWith("{")
+        }
+    }.getOrDefault(false)
 
     override fun onBackPressed() {
         if (webView.canGoBack()) webView.goBack() else super.onBackPressed()
